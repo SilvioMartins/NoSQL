@@ -1,0 +1,204 @@
+NoSQL:
+
+- 1998(Intrd) 2009(reaparição)
+- Suprir necesidades do Big Data
+- NoSQL = NotOnlySQL
+- NoSQL Não Substitui SQL (NoSQL+SQL=NewSQl)
+- Escalabilidade:
+    Vert - SQL, 
+    Hor - NoSQL (Sharding entre nós conecidos)
+        Maior Desenpenho, Inifnita em cloud
+- Schema:
+    Muitas regras - SQL
+    Menos regras - NoSQL (Deve ser modelado)
+- Performance
+    Depende do Disco Local - SQL
+    Depende do Cluster - NoSQL
+- Transações
+    ACID - SQL
+    BSE - NoSQL (Alta Disponibilidade e Consitente)
+
+VANTAGENS NoSQL
+    Flexibilidade
+    Escalabilidade
+    Alta Performance
+
+TIPOS de Bancos NoSQL:
+
+ - Documents
+ - Key-value
+ - Wide-Column
+ - Graph
+
+- Tipos Graph (Grafos)
+   Nós e Vértices
+   Detecção de fraudes, redes sociais
+   Neo4J
+     Usa Cypher(sql)
+     Nós são os dados
+     Vértices são os Relacionamentos -[]->
+     Create - cria, Match - Consulta
+     Match (todos) return todos; - Retora Todos
+     Match... CREATE -> Cria relacionamentos
+     Match... DELETE -> Delete relacionamentos/nó
+     Match... SET -> Atualiza nó/relacionamentos
+
+- Tipo Column (Familia de Coluna)
+   KeySpace - Familia de coluna - Database
+   ColumnFamily - Table
+   Row Key - PK
+   Column - Chave, valor, timestamp
+   Otimiza armazeamento. Não reserva espaço como no relacional
+   Realizar busca por chave (Rastreamento)
+   Cassandra (Mais Utilizado) - Bas Bigtable
+	Maior volume de leitura
+       	Ausência de Transações
+       	Usa CQL (Consulta) Via terminal
+	CQL muito parecido com SQL
+   	CREATE...., SELECT..., INSERT...
+	Insert via JSON
+	SELECT JSON retorna em JSON
+	UPDATE... ALTER.... DELETE...
+
+- Tipo Key-Value
+  Chave Unica e valor
+  Bom desempenho em Cloud
+  Busca limitada, só por chave
+  Uso em cache, sessão, caririnho de compra
+  Redis e Dynamo
+  REDIS (BD, Cache, Mensageria e Fila)
+	Alto desempenho
+	estrutura em memória
+	Versátil 
+	Replicação e persistência
+	aplicação: teitter, github,stackoverflow...
+	TRYREDIs.Io (sandbox)
+	Não tem modelo.Chave - valor, Encadeados
+	SET <chave>:<valor> -> cria chave valor
+        SET JSON
+	GET - Retrona valor
+ 	EX - Define expiração das chaves
+	EXISTS - verifica se chave existe
+	LPUSHER - Insere dados na lista
+        LINDEX - retorna fila
+	LRANGE - Retorna indices
+	Indexa em 0
+	TYPE - retorna tipo
+	TTL retrona tempo de expiração
+	PERSIST - remove exepiração
+	DEL - remove chave
+
+- Tipo Documento
+  Dados e documentos autocontidos e auto descritos
+  Permite redundância e incosistência
+  Livre de esquema
+  Utiliza JSON, XML Outros.
+  MONGODB
+	Codigo aberto, alta perfomance, Schema-free, JSON para armazenar
+   	Suporte a indice
+	Auto sharding (Escala horix)
+	Map reduce - processamento
+ 	GridFS - Arquivos
+        Boa consulta
+      	Document -> tupla/registro
+	Colection -> Tabela
+	Embeddinglinking -> JOIN
+	Quando USAR:
+	   Grande volume de dados
+	   Dados não estruturados
+	Quando Não USAR
+	   Quando tem JOIN
+	   Se prec AICD
+	   Sem transações não são homologadas
+	Em CLI -> mongo-db....
+	Show Databases
+	Robot 3T - Ferramenta Manipulação Mongo
+	Mongo Cloud - Mongo Atlas / Compass
+
+SCHEMA DESIGN - MODELAGEM NoSQL
+
+   embedding x referência
+   
+   EMBEDING:
+	+ Documentos autocontidos
+	+ Consulta info em uma unica query
+	+ Atualiza registro em uma unica operação
+	- Limite de 16MB por documento
+   REFERNCIA:
+        + Não implementa integr ref. mais pode utilizar
+     	+ Doc Pequenos
+	+ Não dplica informação(Mais não é ruim)
+	+ Usado quanda os dados não são acess em todas as consultas
+	- Duas ou mais querys ou $Lookup
+
+   Recomendações relacionamentos
+	One-to-one - atributos chave-valor no doc
+	One-to-few - prefira embedding
+	One-to-many ou
+	many-to-many - prefira por referencia
+
+   Boas Práticas
+	Evitar docs muito grandes (overhead)
+	Nome de campos objetivos e curtos
+	Analise as suas queries utilizando explain()
+	Atualize apenas os campos alterados
+	Evite negações em queries.
+	Listas/arrays dntro de docs não podem crescer sem limite
+
+JSON X BSON:
+
+  BSON:
+	tipo Usaado pelo MongoDB
+	Serialização semelhante ao JSON
+	Contem extensões que permitem a representação de tipos que
+          não fazem parte do JSON. Ex Date, ObjectID
+		
+COMANDOS:
+	mongo - cli de conexão
+	show databases - lista databases
+        use <database> - Muda/cria database
+ 	db.createcollection(<nome>,{<parametros})
+        show collections
+        db.<collection>.insertOne({}) - insere e/ou cria
+	db.<collection>.find({}) - Lista docs da collection
+  	  mostra todos ou parte de acordo com o filtro
+          in - range
+          and - não implementa
+          or - 
+	  lt - pega valores abaixo
+	db.<collection>.count({}) - conta docs
+	db.<collection>.insert({<array}) - insert book writer      
+	db.<collection>.save({}) - atualiza/insere doc todo
+	db.<collection>.update({},{}) - atualiza/insere parte de um ou vários doc´s
+	db.<collection>.updateMany({}{}) - atualiza/insere vários doc´s
+	db.<collection>.delete({}) - deleta o primeiro encontrado
+                       .deleteMany() - deleta tods que deram match
+
+PERFORMANCES E INDICES:
+
+	Indices - Loclização mais fácil. prevenir scan collection
+	OBS Robot3T Aceita script javascript 
+	Criar indices :
+        db.getCollection().createIndex()
+
+AGREGAÇÕES:
+
+  Processar dados em uma ou mais etapas, o resultado de uma etapa é passada
+   para a seguinte, combinando as etapas.
+  db.getCollection().aggregate()
+  Tipos:
+	Agreg propósito unico: (Não pode customizar agreg)
+		Count - conta todos os docs
+		Distinct - Só os que não são duplicados
+   Pipelines básicos:
+        Opeeradores:
+   	  $group - agrupa por informações
+	  $addfield - cria campo extra temporário
+   $sum, $avg, $max e $min
+   $and, $or, $not, $nor
+   $gt >, $lt <, $nte <>, $eq =, $lte <=,
+   $gte >=		
+
+
+
+  
